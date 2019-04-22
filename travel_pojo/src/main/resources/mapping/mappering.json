@@ -1,0 +1,36 @@
+{
+  "product": {
+    "properties": {
+      "id": {
+        "type": "keyword"
+      },
+      "name": {
+        "type": "text",
+        "analyzer": "synonym"
+      },
+      "img": {
+        "type": "text",
+        "analyzer": "synonym"
+      },
+      "price": {
+        "type": "BigDecimal"
+      },
+      "discounts": {
+        "type": "text",
+        "analyzer": "synonym"
+      },
+      "placeOfDeparture": {
+        "type": "text",
+        "analyzer": "synonym"
+      },
+      "agency": {
+        "type": "text",
+        "analyzer": "synonym"
+      },
+      "province": {
+        "type": "text",
+        "analyzer": "synonym"
+      }
+    }
+  }
+}

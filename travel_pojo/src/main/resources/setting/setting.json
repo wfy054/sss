@@ -1,0 +1,35 @@
+{
+  "index": {
+    "number_of_shards": "1",
+    "number_of_replicas": "0",
+    "analysis": {
+      "analyzer": {
+        "ik_smart": {
+          "tokenizer": "ik_smart"
+        },
+        "emailAnalyzer": {
+          "type": "custom",
+          "tokenizer": "uax_url_email"
+        },
+        "synonym": {
+          "type": "custom",
+          "tokenizer": "ik_smart",
+          "filter" : ["local_synonym","lowercase"]
+        }
+      },
+      "filter" : {
+        "local_synonym" : {
+          "type" : "synonym",
+          "synonyms_path" : "synonym.txt"
+        }
+      },
+      "normalizer": {
+        "lower_case_normalizer": {
+          "type": "custom",
+          "char_filter": [],
+          "filter": [ "lowercase" ]
+        }
+      }
+    }
+  }
+}
