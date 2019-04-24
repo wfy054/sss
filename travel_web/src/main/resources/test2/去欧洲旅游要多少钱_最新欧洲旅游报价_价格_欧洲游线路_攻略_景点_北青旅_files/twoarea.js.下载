@@ -1,0 +1,15 @@
+$(document).ready(function() {
+	
+	$('.linelbs .lbsRight span').click(function(){
+		if ($(this).html().length > 1)
+		{
+			var line_id = $(this).attr('id');
+			$(this).siblings().removeClass('hover');
+			$(this).addClass('hover');
+			var line_text = $('.line_'+line_id).clone();
+			$('.line_'+line_id).remove();
+			$('.linelbs').after(line_text);
+		}
+	});
+	
+});

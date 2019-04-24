@@ -1,0 +1,241 @@
+﻿function Calendar(nian, yue, ri) {
+	var $this = this;
+	var $date = new Date();
+	var $weeks = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+	var $days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+	var $id = 0;
+	this.year = nian;
+	this.month = yue;
+	this.date = ri;
+	var ui; //this.ui = null;
+	Calendar.isLeapYear = function(year) {
+		return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
+	}
+
+	this.createUI = function(){
+		var grid = document.createElement("TABLE");
+		var gridBody = document.createElement("TBODY");
+		var btnPrev = document.createElement("A");
+		var btnNext = document.createElement("A");
+
+		with(grid)
+		{
+			border = "0";
+			className = "calendar";
+			cellPadding = "0";
+			cellSpacing = "0";
+		}
+
+		with(btnPrev)
+		{
+			//href = "#";
+			innerText = textContent = "上一月";
+			//btnPrev.style.marginRight = "-30px";
+			onclick = function(e) {
+				e = e || window.event;
+				var date = new Date($this.year, $this.month, $this.date);
+				$this.year = $this.year;
+				$this.month = $this.month - 1;
+				$this.date = date.getDate();
+				if ($this.month == 0) {
+					$this.year = $this.year - 1;
+					$this.month = 12;
+				}
+				$this.change($this.year, $this.month, $this.date);
+			};
+		}
+
+		with(btnNext)
+		{
+			//href = "#";
+			innerText = textContent = "下一月";
+			//btnNext.style.marginLeft = "-30px";
+			onclick = function(e) {
+				e = e || window.event;
+				var date = new Date($this.year, $this.month, $this.date);
+				$this.year = date.getFullYear();
+				$this.month = date.getMonth() + 1;
+				$this.date = date.getDate();
+				$this.change($this.year, $this.month, $this.date);
+			};
+		}
+
+		grid.appendChild(gridBody);
+		for (var i = 0; i < 8; ++i)
+		{
+			var row = document.createElement("TR");
+
+			switch (i)
+			{
+				case 0:
+					row.className = "calendar-title";
+					break;
+				case 1:
+					row.className = "calendar-weeks";
+					break;
+				default:
+					row.className = "calendar-week-days";
+					break;
+			}
+			for (var j = 0; j < 7; ++j)
+			{
+				var cell = document.createElement("TD");
+
+				//星期日
+				if (j == 0)
+				{
+//                    cell.className = "calendar_color_ff6600";
+					cell.className = "";
+				}
+				//星期六
+				if (j == 6)
+				{
+//                    cell.className = "calendar_color_ff6600";
+					cell.className = "";
+				}
+				switch (i)
+				{
+					case 0:
+						switch (j)
+						{
+							case 0:
+								cell.appendChild(btnPrev);
+								break;
+							case 1:
+								j = 5;
+								with(cell) {
+									colSpan = "5";
+									className = "calendar-title-current-month";
+								}
+								break;
+							default:
+								cell.appendChild(btnNext);
+								break;
+						}
+						break;
+					case 1:
+						cell.innerText = cell.textContent = $weeks[j];
+						break;
+					default:
+						cell.innerText = cell.textContent = " ";
+						break;
+				}
+				row.appendChild(cell);
+			}
+			gridBody.appendChild(row);
+		}
+
+		return grid;
+	}
+
+	this.change = function(year, month, date)
+	{
+		//得到相关日程信息
+		var doc = document.location;
+		$.ajax({
+			type: "get",
+			url: "TourDate.php?year=" + year + "&month=" + month + "&id=" + $id + "&" + Math.random(),
+			success: function(msg) {
+				var itinerary = eval("(" + msg + ")"); //转换为json对象
+				if (itinerary && itinerary.data.length >= 1)
+				{
+					var dtime = itinerary.data[0].pdatetime.split('-');
+
+					if (dtime.length >= 2)
+					{ //取到第一个对象的日期
+						year = dtime[0];
+						month = dtime[1]; //重新指定时间日期为数据时间
+					}
+				}
+				with(ui.rows[0].children[1])
+				{
+					innerText = textContent = year + "年" + month + "月"; //+ (month < 10 ? "0" : "")
+					$this.month = month;
+				} //end with
+				for (var i = 2; i < ui.rows.length; ++i)
+				{
+					for (var j = 0; j < 7; ++j)
+					{
+						with(ui.rows[i].children[j])
+						{
+							innerText = textContent = "";
+						}
+					}
+				} // end for
+				var date = new Date(year, month - 1, 1);
+				var dayOfWeek = date.getDay();
+
+				var day = 1,
+				days = $days[month - 1] + (month == 2 && Calendar.isLeapYear(year) ? 1 : 0);
+
+				for (var i = 2; i < ui.rows.length; ++i)
+				{
+					for (var j = i == 2 ? dayOfWeek: 0; j < 7; ++j)
+					{
+						var isToday = (year == $date.getFullYear() && month == $date.getMonth() + 1 && day == $date.getDate());
+						with (ui.rows[i].children[j])
+						{
+							className = isToday ? "calendar-today": "";
+							if (itinerary)
+							{
+								for (var itr = 0; itr < itinerary.data.length; itr++)
+								{
+									var otime = itinerary.data[itr].pdatetime.split('-'); //当前服务器的时间
+									var _day = new Date(otime[1] + '/' + otime[2] + '/' + otime[0]).getDate();
+									var _month = new Date(otime[1] + '/' + otime[2] + '/' + otime[0]).getMonth() + 1;
+									var _year = new Date(otime[1] + '/' + otime[2] + '/' + otime[0]).getFullYear();
+									if (_day == day && month == _month && _year == year)
+									{
+										className = isToday ? "calendar-tag": ""; //表示当前天为今天则改有红色字体及12号字
+										var time1 = new Date(itinerary.data[itr].pdatetime.replace(/-/, "/").replace("-", "/"));
+										var time2 = new Date(new Date().setDate(parseInt(new Date().getDate()) + parseInt(itinerary.data[itr].hour / 24)));
+										//判断当前日历日期是否小于当前日期加上提前预定天数
+										var flag = time1 < time2;
+										if (flag)
+										{
+											textContent = "<div class='day'>" + day + "</div><div class='prices'><div class='yuwei'>已满</div><div class='price'>￥<span>" + itinerary.data[itr].price + "</span>起</div></div>";
+											innerHTML = textContent;
+										}
+										else
+										{
+											if (itinerary.data[itr].cuteNum == "0" || itinerary.data[itr].cuteNum > 10)
+											{
+												textContext = "<div class='day'>" + day + "</div><div class='prices'><div class='yuwei'>实时查询</div><div class='price'>￥<span>" + itinerary.data[itr].price + "</span>起</div></div>";
+											}
+											else
+											{
+												textContext = "<div class='day'>" + day + "</div><div class='prices'><div class='yuwei'>余位:" + itinerary.data[itr].cuteNum + "</div><div class='price'>￥<span>" + itinerary.data[itr].price + "</span>起</div></div>";
+											}
+											innerHTML = textContext;
+										}
+									}
+								} //end for
+							} //end if
+							if (innerHTML == "") {
+								innerHTML = textContent = "<div class='day'>" + day + "</div>";
+							}
+						} // end with
+						++day;
+						if (day > days) return;
+					} //end for
+				} //end for
+			} //end success
+		}); //end ajax
+	}
+
+	this.show = function(ele, id) {
+		ui = ui || this.createUI();
+		$id = id;
+		this.change(this.year, this.month, this.date);
+
+		ele.appendChild(ui);
+	}
+
+	this.toString = function() {
+		// alert(this.year + "-" + this.month + "-" + this.date);
+	}
+}
+
+/*window.onload = function() {
+new Calendar().show(document.getElementById("dv_01"));
+}*/

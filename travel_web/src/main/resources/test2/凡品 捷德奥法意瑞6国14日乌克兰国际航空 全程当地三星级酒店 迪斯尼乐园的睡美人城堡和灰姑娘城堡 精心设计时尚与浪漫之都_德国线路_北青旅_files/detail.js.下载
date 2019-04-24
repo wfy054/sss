@@ -1,0 +1,201 @@
+/* 出境详情页tab js */
+$(document).ready(function() {
+
+	var myDate = new Date();
+	myDate = new Date(myDate.getTime() + 24*60*60*1000*2);
+	var date_time = myDate.getFullYear() + '-' + (myDate.getMonth() + 1) + '-' + (myDate.getDate());
+	$('.tuanqi').val(date_time);
+	
+	$('.shuomings').hover(function() {
+	    $('.detail_summary .shuoming').show(); 
+	},function() {
+		$('.detail_summary .shuoming').hide();
+	});
+	
+	$('.yuding .fa-question-circle').hover(function() {
+	    $('.yuding .prompt').show();
+	},function() {
+		$('.yuding .prompt').hide();
+	});
+	
+	$('.detail_summary .p').hover(function(){
+		var obj = $(this)[0];
+		var hg = obj.scrollHeight;
+		if (hg > 162){
+			$(this).css('height','auto');
+		}
+	},function(){
+		var obj = $(this)[0];
+		var hg = obj.scrollHeight;
+		if (hg > 162){
+			$(this).height(140);
+		}
+	});
+	
+	$('.input_date').live('focus',function(){
+		$(this).datepick({
+			minDate: '+2',
+			showOnFocus: true
+		});
+	});
+	
+	$('.price_explain').hover(function(){
+		$(this).find('.explain').show();
+	},function(){
+		$(this).find('.explain').hide();
+	});
+	
+	$('.tijiao').click(function(){
+		yanyuding();
+	})
+	
+	/*$('.yuding').hover(function(){
+		$('#DateControler').show();
+	},function(){
+		$('#DateControler').hide();
+	});*/
+	
+	if ($('.xingcheng').length > 0)
+	{
+		tour_day_judge();
+		$(window).scroll(function(){
+			tour_day_judge();
+		});
+	}
+	
+	$("img.lazy").lazyload({
+		threshold : 200,
+		skip_invisible : false
+	});
+	
+	$('.cnt .imgs').hover(function(){
+		$(this).children('.img_tit').show();
+	},function(){
+		$(this).children('.img_tit').hide();
+	});
+	
+
+	$('.calendar-week-days td').bind({
+		click : function() {
+			if ($(this).children('.day').length > 0)
+			{
+				var _day = $(this).children('.day');
+				_day_text = _day.text().length > 1 ? _day.text() : 0 + '' + _day.text();
+				var str = $('.calendar-title-current-month').text();
+				var str = str.replace("年","-");
+				var str = str.replace("月","-");
+				var day_time = str + _day_text;
+				day_times = new Date(day_time);
+				day = new Date();
+				if (((day_times.getTime() - day) / 1000) > 1 )
+				{
+					$('.tuanqi').val(day_time);
+				}
+			}
+		}
+	});
+
+});
+
+function tour_day_judge(){
+	var _height = $(window).innerHeight();
+	var _scrollTop = $(document).scrollTop();
+	var window_h = window.screen.height;
+	var line_menu = $('.line_menu');
+	var line_menu_top = line_menu.offset().top;
+	var tour_days = $('.tour_days');
+	var tour_days_h = tour_days.height();
+	var tour_days_active = $('.tour_days.active');
+	var xingcheng = $('.xingcheng');
+	var xingcheng_top = xingcheng.offset().top;
+	var xingcheng_h = xingcheng.height();
+	if (tour_days_active.length == 0)
+	{
+		if (_scrollTop > tour_days.offset().top && _scrollTop < (xingcheng_top + xingcheng_h - tour_days_h - 20))
+		{
+			$('.tour_days').addClass('active');
+		}
+		else
+		{
+			$('.tour_days').removeClass('active');
+			$('.tour_days li').removeClass('hover');
+			$('.day_icon').removeClass('active');
+		}
+	}
+	else
+	{
+		if (_scrollTop < xingcheng.offset().top || _scrollTop > (xingcheng_top + xingcheng_h - tour_days_h - 20))
+		{
+			$('.tour_days').removeClass('active');
+			$('.tour_days li').removeClass('hover');
+			$('.day_icon').removeClass('active');
+		}
+	}
+	$('.xingcheng .line_info').each(function(i){
+		var line = $(this);
+		if (_scrollTop > (line.offset().top - 150))
+		{
+			$('.day_icon').removeClass('active');
+			$(this).children('.infos').children('.days').children('.day_icon').addClass('active');
+			$('.tour_days li').removeClass('hover');
+			$('.tour_days li').eq(i).addClass('hover');
+		}
+	});
+}
+
+function yanyuding()
+{
+	var number = /^[0-9-]+$/; // 验证数字
+	var datereg = /^(\d{1,4})(-|\/)$/;
+	var tuanqi = $(".tuanqi")[0];
+	var adult = $(".adult")[0];
+	var baby = $(".baby")[0];
+	var bianhao = $("#bianhao")[0];
+	
+	if (tuanqi.value == "" || tuanqi.value == null)
+	{
+		alert("请选择出发日期！");
+		tuanqi.focus();
+		return false;
+	}
+	else if (datereg.test(tuanqi.value))
+	{
+		alert("请选择正确出发日期！");
+		tuanqi.focus();
+		return false;
+	}
+	else if (adult.value == "" || adult.value == null)
+	{
+		alert("请选择成人人数！");
+		chengren.focus();
+		return false;
+	}
+	else if (!number.test(adult.value) || adult.value <= 0)
+	{
+		alert("请选择正确成人人数！");
+		adult.value="";
+		adult.focus();
+		return false;
+	}
+	else if (baby.value == "" || baby.value == null)
+	{
+		alert("请选择儿童人数！");
+		chengren.focus();
+		return false;
+	}
+	else if (!number.test(baby.value))
+	{
+		alert("请选择正确儿童人数！");
+		baby.focus();
+		return false;
+	}
+	else if (!number.test(bianhao.value) && bianhao.length == 7)
+	{
+		return false;
+	}
+	else
+	{
+		$('.yuding').attr('action', '/yuding.php');
+		$('.yuding').submit();
+	}
+}

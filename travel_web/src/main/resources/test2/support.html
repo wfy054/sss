@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="C:/Users/枫雅/Desktop/test2/js/jquery.min.js"></script>
+    <script src="C:/Users/枫雅/Desktop/test2/js/jquery-easyui-1.7.6/jquery.easyui.min.js"></script>
+    <script src="C:/Users/枫雅/Desktop/test2/js/jquery-easyui-1.7.6/locale/easyui-lang-zh_CN.js"></script>
+    <link rel="stylesheet" href="C:/Users/枫雅/Desktop/test2/js/jquery-easyui-1.7.6/themes/icon.css">
+    <link rel="stylesheet" href="C:/Users/枫雅/Desktop/test2/js/jquery-easyui-1.7.6/themes/default/easyui.css">
+    <script src="C:/Users/枫雅/Desktop/test2/js/kindeditor/kindeditor-all.js"></script>
+    <link rel="stylesheet" href="C:/Users/枫雅/Desktop/test2/js/kindeditor/themes/default/default.css">
+</head>
+<style type="text/css">
+    #sendDiv{
+        text-align: center;
+    }
+    .SendP{
+        text-align: right;
+    }
+    .send{
+        background-color: green;
+        color: white;
+        font-size: 24px;
+        border-radius: 8px;
+        padding: 2px 5px;
+    }
+    .rightXjt{
+        color: green;
+        margin-left: -5px;
+    }
+    .lefttXjt{
+        color: blue;
+        margin-right: -5px;
+    }
+    .receive{
+        background-color: blue;
+        font-size: 24px;
+        color: white;
+        border-radius: 5px;
+        padding: 2px 5px;
+    }
+</style>
+<body>
+<div class="easyui-layout" data-options="fit:true" >
+    <div data-options="region:'north',title:'智能机器人'" style="height:80%" id="content">
+
+    </div>
+    <div data-options="region:'center'" id="sendDiv">
+        <input class="easyui-textbox" id="mesg">
+        <a class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:sendMsg()">发送</a>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    //发送消息
+    function sendMsg(){
+        var mesg = $("#mesg").textbox("getValue");
+        var send =
+            '<p class="SendP">'+
+            '<span class="send">'+mesg+'</span>'+
+            '<span class="rightXjt">▶</span>'+
+            '</p>';
+
+        $("#content").append(send);
+        $("#mesg").textbox("setValue","");
+        $("#content").scrollTop($("#content")[0].scrollHeight);
+        $.ajax({
+            url:"http://127.0.0.1:8085/robotTest",
+            type:"post",
+            data:{
+                msg:mesg
+            },
+            success:function(data){
+
+                var receive = '<p>'+
+                    '<span class="lefttXjt">◀</span>'+
+                    '<span class="receive">'+data+'</span>'+
+                    '</p>';
+                $("#content").append(receive);
+                $("#content").scrollTop($("#content")[0].scrollHeight);
+            }
+        })
+    }
+</script>
+</html>

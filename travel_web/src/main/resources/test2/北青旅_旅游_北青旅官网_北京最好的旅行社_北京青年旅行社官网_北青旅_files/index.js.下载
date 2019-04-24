@@ -1,0 +1,92 @@
+$(document).ready(function() {
+	
+	/*FeatureList(".index_focus", {
+		"onclass" : "noopdiv",
+		"offclass" : "opdiv",
+		"pause_on_act" : "mouseover",
+		"interval" : 5000,
+		"speed" : 5
+	});*/
+	
+	$('.index_gala .menus li').click(function(){
+		$(this).siblings().removeClass('hover');
+		$(this).addClass('hover');
+		$(this).closest('.index_gala').find('.line_list').removeClass('hover');
+		$(this).closest('.index_gala').find('.line_list').eq($(this).index()).addClass('hover');
+		$(this).closest('.index_gala').find('.line_list').eq($(this).index()).find('img.lazy').lazyload({
+			event : "sporty"
+		});
+		$(this).closest('.index_gala').find('.line_list').eq($(this).index()).find('img.lazy').trigger("sporty");
+	});
+	
+	$('.index_outbound .menus li').click(function(){
+		$(this).siblings().removeClass('hover');
+		$(this).addClass('hover');
+		$(this).closest('.index_outbound').find('.more').removeClass('hover');
+		$(this).closest('.index_outbound').find('.more').eq($(this).index()).addClass('hover');
+		$(this).closest('.index_outbound').find('.line_list').removeClass('hover');
+		$(this).closest('.index_outbound').find('.line_list').eq($(this).index()).addClass('hover');
+		$(this).closest('.index_outbound').find('.line_list').eq($(this).index()).find('img.lazy').lazyload({
+			event : "sporty"
+		});
+		$(this).closest('.index_outbound').find('.line_list').eq($(this).index()).find('img.lazy').trigger("sporty");
+	});
+	
+	$('.index_domestic .menus li').click(function(){
+		$(this).siblings().removeClass('hover');
+		$(this).addClass('hover');
+		$(this).closest('.index_domestic').find('.more').removeClass('hover');
+		$(this).closest('.index_domestic').find('.more').eq($(this).index()).addClass('hover');
+		$(this).closest('.index_domestic').find('.line_list').removeClass('hover');
+		$(this).closest('.index_domestic').find('.line_list').eq($(this).index()).addClass('hover');
+		$(this).closest('.index_domestic').find('.line_list').eq($(this).index()).find('img.lazy').lazyload({
+			event : "sporty"
+		});
+		$(this).closest('.index_domestic').find('.line_list').eq($(this).index()).find('img.lazy').trigger("sporty");
+	});
+	
+	$('.index_island .menus li').click(function(){
+		$(this).siblings().removeClass('hover');
+		$(this).addClass('hover');
+		$(this).closest('.index_island').find('.more').removeClass('hover');
+		$(this).closest('.index_island').find('.more').eq($(this).index()).addClass('hover');
+		$(this).closest('.index_island').find('.line_list').removeClass('hover');
+		$(this).closest('.index_island').find('.line_list').eq($(this).index()).addClass('hover');
+		$(this).closest('.index_island').find('.line_list').eq($(this).index()).find('img.lazy').lazyload({
+			event : "sporty"
+		});
+		$(this).closest('.index_island').find('.line_list').eq($(this).index()).find('img.lazy').trigger("sporty");
+	});
+	
+	$('.index_selftour .menus li').click(function(){
+		$(this).siblings().removeClass('hover');
+		$(this).addClass('hover');
+		$(this).closest('.index_selftour').find('.more').removeClass('hover');
+		$(this).closest('.index_selftour').find('.more').eq($(this).index()).addClass('hover');
+		$(this).closest('.index_selftour').find('.line_list').removeClass('hover');
+		$(this).closest('.index_selftour').find('.line_list').eq($(this).index()).addClass('hover');
+		$(this).closest('.index_selftour').find('.line_list').eq($(this).index()).find('img.lazy').lazyload({
+			event : "sporty"
+		});
+		$(this).closest('.index_selftour').find('.line_list').eq($(this).index()).find('img.lazy').trigger("sporty");
+	});
+	
+	$('.index_around .menus li').click(function(){
+		$(this).siblings().removeClass('hover');
+		$(this).addClass('hover');
+		$(this).closest('.index_around').find('.more').removeClass('hover');
+		$(this).closest('.index_around').find('.more').eq($(this).index()).addClass('hover');
+		$(this).closest('.index_around').find('.line_list').removeClass('hover');
+		$(this).closest('.index_around').find('.line_list').eq($(this).index()).addClass('hover');
+		$(this).closest('.index_around').find('.line_list').eq($(this).index()).find('img.lazy').lazyload({
+			event : "sporty"
+		});
+		$(this).closest('.index_around').find('.line_list').eq($(this).index()).find('img.lazy').trigger("sporty");
+	});
+	
+	$('.index_attractions ul li').hover(function(){
+		$(this).children('.title').slideDown('300');
+	},function(){
+		$(this).children('.title').slideUp('300');
+	})
+});
